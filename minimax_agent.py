@@ -16,9 +16,9 @@ class Agent:
     """
     agent class.
     """
-    def __init__(self, agent_id) -> None:
+    def __init__(self, agent_id, search_depth=3) -> None:
         self.agent_id = agent_id
-        self.search_depth = 3
+        self.search_depth = search_depth
         if agent_id == "player_0":
             self.agent_code = ("player_0", "player_1")
         else:
@@ -48,8 +48,6 @@ class Agent:
             elif next_value == maxmin_value:
                 best_actions.append(action)
 
-        print(maxmin_value)
-        print(best_actions)
         return random.choice(best_actions)
 
     def recursive_search(self, state, depth, side, threshold):
@@ -123,7 +121,12 @@ class Agent:
         """
         count_np = np.zeros((12))
 
-        for side in range(2):
+        if self.search_depth % 2 == 0:
+            sequence = [0, 1]
+        else:
+            sequence = [1, 0]
+
+        for side in sequence:
             ag_stone = side
             op_stone = 1 - side
             for row in range(ROW):
@@ -167,7 +170,7 @@ class Agent:
                                     side * 6 + (step-1) * 2 + blocked] += 1
 
         weight_np = np.array([3, 1, 10, 4, 50, 20,
-                              -30, -10, -100, -40, -500, -200])
+                              -6, -2, -20, -8, -100, -40])
         return np.dot(count_np, weight_np)
 
     def out_of_range(self, row, col):

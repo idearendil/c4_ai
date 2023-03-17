@@ -16,22 +16,27 @@ if __name__ == "__main__":
     showing_env.render()
     time.sleep(1)
 
-    agents = [Agent("player_0"), Agent("player_1")]
+    agents = [Agent("player_0", 2), Agent("player_1", 2)]
 
-    for agent in env.agent_iter():
+    for agent_id in env.agent_iter():
 
         observation, reward, termination, truncation, info = env.last()
 
         if termination or truncation:
             if reward == 1:
-                print(agent, "won!!")
+                print(agent_id, "won!!")
+            elif reward == -1:
+                print(agent_id, "did wrong action.")
             else:
-                print(agent, "did wrong action.")
+                print("draw")
             break
 
         # print(env.observe(agent))
         # action = env.action_space(agent).sample()
-        action = Agent(agent)(env)
+        if agent_id == "player_0":
+            action = agents[0](env)
+        else:
+            action = agents[1](env)
         showing_env.step(action)
         env.step(action)
         showing_env.render()
